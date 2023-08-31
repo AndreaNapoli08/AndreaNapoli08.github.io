@@ -1,0 +1,107 @@
+<!-- licenza d'uso riservata ad Andrea Napoli e all'università si Bologna -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" charset="utf-8">
+    <link rel="stylesheet" href="entities_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Organizations</h1>
+        <div class="button-container">
+            <div class="dropdown">
+                <select id="orgDropdown" class="dropbtn" title="select">
+                    <option selected value="">Select an organization</option>
+                    <option value="negozio">Negozio</option>
+                    <option value="stadio">Stadio</option>
+                    <option value="centro-commerciale">Centro Commerciale</option>
+                    <!-- Aggiungi altre organizzazioni randomiche qui -->
+                </select>
+            </div>
+            <button id="addBtn" class="add-btn" onclick="toggleInput()">Add organization</button>
+        </div>
+        <div class="input-container" style="display:none">
+            <input type="text" id="organizationInput" placeholder="Insert the organization" value="">
+        </div>
+        <div class="bottom-right-button">
+            <button id="saveBtn">Save</button>
+        </div>
+    </div>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script>
+        const inputContainer = document.querySelector('.input-container');
+        const orgDropdown = document.getElementById('orgDropdown');
+        const addBtn = document.getElementById('addBtn');
+        const organizationInput = document.getElementById('organizationInput');
+
+        const queryParams = new URLSearchParams(window.location.search);
+        const information = queryParams.get('information');
+        const parsedInformation = JSON.parse(information);
+        
+        if (parsedInformation != null) {
+            console.log("merda")
+            if (parsedInformation.organization == "negozio" || parsedInformation.organization == "stadio" || parsedInformation.organization == "centro-commerciale") {
+                orgDropdown.value = parsedInformation.organization;
+                // Nascondi l'input di testo e abilita il menu a tendina
+                inputContainer.style.display = 'none';
+                organizationInput.value = "";
+                orgDropdown.disabled = false;
+                addBtn.textContent = 'Aggiungi organizzazione';
+                addBtn.style.backgroundColor = "#03a9f4";
+            } else {
+                organizationInput.value = parsedInformation.organization;
+                // Mostra l'input di testo e disabilita il menu a tendina
+                inputContainer.style.display = 'block';
+                orgDropdown.disabled = true;
+                addBtn.textContent = 'Rimuovi organizzazione';
+                addBtn.style.backgroundColor = "red";
+                orgDropdown.value = "";
+            }
+        }
+
+        function toggleInput() {
+            if (inputContainer.style.display === 'none') {
+                // Mostra l'input di testo e disabilita il menu a tendina
+                inputContainer.style.display = 'block';
+                orgDropdown.disabled = true;
+                addBtn.textContent = 'Rimuovi organizzazione';
+                addBtn.style.backgroundColor = "red";
+                orgDropdown.value = "";
+            } else {
+                // Nascondi l'input di testo e abilita il menu a tendina
+                inputContainer.style.display = 'none';
+                organizationInput.value = "";
+                orgDropdown.disabled = false;
+                addBtn.textContent = 'Aggiungi organizzazione';
+                addBtn.style.backgroundColor = "#03a9f4";
+            }
+        }
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const orgDropdown = document.getElementById('orgDropdown');
+            const organizationInput = document.getElementById('organizationInput');
+            let selectedOrganization = orgDropdown.value != "" ? orgDropdown.value : organizationInput.value.trim();
+
+            if (selectedOrganization) {
+                // Crea un oggetto contenente l'organizzazione selezionata da inviare all'add-in
+                const dataToSend = {
+                    entity: "organization",
+                    organization: selectedOrganization,
+                };
+                Office.onReady(function (info) {
+                    if (info.host === Office.HostType.Word || info.host === Office.HostType.Excel || info.host === Office.HostType.PowerPoint) {
+                        // Invia i dati all'add-in utilizzando Office.context.ui.messageParent
+                        Office.context.ui.messageParent(JSON.stringify(dataToSend));
+                    } else {
+                        // Se l'add-in non è eseguito in un ambiente Office corretto, gestisci il caso di errore
+                        console.log("Errore: ambiente Office non riconosciuto");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
