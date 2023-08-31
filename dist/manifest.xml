@@ -8,9 +8,9 @@
   <Description DefaultValue="A template to get started."/>
   <IconUrl DefaultValue="https://andreanapoli08.github.io/dist/assets/logo-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://andreanapoli08.github.io/dist/assets/logo-64.png"/>
-  <SupportUrl DefaultValue="https://andreanapoli08.github.io/dist/help"/>
+  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
   <AppDomains>
-    <AppDomain>https://andreanapoli08.github.io/dist</AppDomain>
+    <AppDomain>https://www.contoso.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Document"/>
